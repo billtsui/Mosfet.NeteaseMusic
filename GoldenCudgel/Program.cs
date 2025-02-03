@@ -1,5 +1,4 @@
-﻿using CommandLine;
-using GoldenCudgel.Chain;
+﻿using GoldenCudgel.Chain;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
 
@@ -9,7 +8,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<Options>(args).WithParsed(Run);
     }
 
     private static void Run(Options options)
@@ -117,7 +115,7 @@ public class Program
 
     private class Options
     {
-        [Option('p', "path", Required = true, HelpText = "网易云音乐下载目录")]
+        // [Option('p', "path", Required = true, HelpText = "网易云音乐下载目录")]
         public string Path { get; set; }
     }
 }
