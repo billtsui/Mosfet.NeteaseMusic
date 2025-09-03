@@ -4,15 +4,11 @@ using GoldenCudgel.Utils;
 
 namespace GoldenCudgel;
 
-public class Program
+public class GoldenCudgel
 {
-    public static void Main(string[] args)
+    private void Run(Parameter parameter)
     {
-    }
-
-    private static void Run(Options options)
-    {
-        var fileInfoList = FileUtils.ReadFileList(options.Path);
+        var fileInfoList = FileUtils.ReadFileList(parameter.path);
         if (fileInfoList.Count == 0)
         {
             Console.WriteLine("No such file found.");
@@ -30,10 +26,7 @@ public class Program
         Console.WriteLine($"Find {fileInfoList.Count} songs.");
         if (fileInfoList.Count > 50)
         {
-            //最多用4个线程处理
-            int processorCount = Environment.ProcessorCount > 4
-                ? 4
-                : Environment.ProcessorCount;
+            int processorCount = parameter.threadNum;
 
             Task[] tasks = new Task[processorCount];
 
@@ -65,7 +58,7 @@ public class Program
         Console.WriteLine("Done!");
     }
 
-    private static void ProcessFile(List<FileInfo> fileInfoList)
+    private void ProcessFile(List<FileInfo> fileInfoList)
     {
         var headerHandler = AssembleChain();
 
@@ -76,46 +69,30 @@ public class Program
                 FileName = fileInfo.Name
             };
 
-            using var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
-            headerHandler.Handle(fileInfo, fs, ncmObject);
-            fs.Close();
+            using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
+            {
+                headerHandler.Handle(fileInfo, fs, ncmObject);
+                fs.Close();
+            }
             Console.WriteLine(ncmObject.ToString());
         }
     }
 
-    private static HeaderHandler AssembleChain()
+    private HeaderHandler AssembleChain()
     {
         var headerHandler = new HeaderHandler();
-        var jumpHandler = new JumpHandler();
-        var rc4LengthHandler = new Rc4LengthHandler();
-        var rc4ContentHandler = new Rc4ContentHandler();
-        var metaLengthHandler = new MetaLengthHandler();
-        var metaContentHandler = new MetaContentHandler();
-        var checkHandler = new CheckHandler();
-        var jump2Handler = new Jump2Handler();
-        var albumImageLengthHandler = new AlbumImageLengthHandler();
-        var albumImageHandler = new AlbumImageHandler();
-        var musicDataHandler = new MusicDataHandler();
-        var fileCreateHandler = new FileCreateHandler();
-
-        headerHandler.SetNext(jumpHandler)
-            .SetNext(rc4LengthHandler)
-            .SetNext(rc4ContentHandler)
-            .SetNext(metaLengthHandler)
-            .SetNext(metaContentHandler)
-            .SetNext(checkHandler)
-            .SetNext(jump2Handler)
-            .SetNext(albumImageLengthHandler)
-            .SetNext(albumImageHandler)
-            .SetNext(musicDataHandler)
-            .SetNext(fileCreateHandler);
+        headerHandler.SetNext(new Jump2Handler())
+                     .SetNext(new Rc4LengthHandler())
+                     .SetNext(new Rc4ContentHandler())
+                     .SetNext(new MetaLengthHandler())
+                     .SetNext(new MetaContentHandler())
+                     .SetNext(new CheckHandler())
+                     .SetNext(new Jump2Handler())
+                     .SetNext(new AlbumImageLengthHandler())
+                     .SetNext(new AlbumImageHandler())
+                     .SetNext(new MusicDataHandler())
+                     .SetNext(new FileCreateHandler());
 
         return headerHandler;
-    }
-
-    private class Options
-    {
-        // [Option('p', "path", Required = true, HelpText = "网易云音乐下载目录")]
-        public string Path { get; set; }
     }
 }

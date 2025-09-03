@@ -2,27 +2,27 @@ namespace GoldenCudgel.Entities;
 
 public class NcmObject
 {
-    private byte[] _albumImageContentArray;
+    private byte[] _albumImageContentArray = new Byte[] { };
 
-    private byte[] _albumImageLengthArray;
+    private byte[] _albumImageLengthArray = new byte[] { };
 
-    private byte[] _crcArray;
-    private string _fileName;
-    private string _header;
+    private byte[] _crcArray = new byte[] { };
+    private string _fileName = "";
+    private string _header = "";
 
-    private byte[] _headerArray;
-    private string _metaData;
+    private byte[] _headerArray = new byte[] { };
+    private string _metaData = "";
 
-    private byte[] _metaDataArray;
+    private byte[] _metaDataArray = new byte[] { };
 
-    private byte[] _metaLengthArray;
-    private List<byte> _musicDataArray;
+    private byte[] _metaLengthArray = new byte[] { };
+    private List<byte> _musicDataArray = new List<byte>();
 
-    private NeteaseCopyrightData _neteaseCopyrightData;
+    private NeteaseCopyrightData _neteaseCopyrightData = new NeteaseCopyrightData();
 
-    private byte[] _rc4KeyContentArray;
+    private byte[] _rc4KeyContentArray = new byte[] { };
 
-    private byte[] _rc4KeyLengthArray;
+    private byte[] _rc4KeyLengthArray = new byte[] { };
 
 
     public string FileName
