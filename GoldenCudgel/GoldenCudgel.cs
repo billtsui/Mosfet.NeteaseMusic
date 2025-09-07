@@ -17,8 +17,8 @@ public class GoldenCudgel
             .WithNotParsed(HandleParseError)
             .WithParsed<Options>(o =>
             {
-                p.path = o.Path;
-                p.threadNum = o.ThreadNum is 1 or 2 or 4 or 8 ? o.ThreadNum : (short)1;
+                p.Path = o.Path;
+                p.ThreadNum = o.ThreadNum is 1 or 2 or 4 or 8 ? o.ThreadNum : (short)1;
             });
         Run(p);
     }
@@ -30,9 +30,9 @@ public class GoldenCudgel
 
     private static void Run(Parameter parameter)
     {
-        Console.WriteLine($"路径：{parameter.path}。线程数：{parameter.threadNum}");
+        Console.WriteLine($"路径：{parameter.Path}。线程数：{parameter.ThreadNum}");
 
-        var fileInfoList = FileUtils.ReadFileList(parameter.path).OrderBy(file => file.Name).ToList();
+        var fileInfoList = FileUtils.ReadFileList(parameter.Path).OrderBy(file => file.Name).ToList();
         if (fileInfoList.Count == 0)
         {
             Console.WriteLine("当前路径未找到ncm文件!");
@@ -53,16 +53,16 @@ public class GoldenCudgel
 
         if (fileInfoList.Count >= MinFileNum)
         {
-            Task[] tasks = new Task[parameter.threadNum];
+            Task[] tasks = new Task[parameter.ThreadNum];
 
             for (var i = 0; i < tasks.Length; i++)
             {
                 var i1 = i;
                 tasks[i] = new Task(() =>
                 {
-                    int songCount = fileInfoList.Count % parameter.threadNum == 0
-                        ? fileInfoList.Count / parameter.threadNum
-                        : fileInfoList.Count / parameter.threadNum + 1;
+                    int songCount = fileInfoList.Count % parameter.ThreadNum == 0
+                        ? fileInfoList.Count / parameter.ThreadNum
+                        : fileInfoList.Count / parameter.ThreadNum + 1;
                     ProcessFile(fileInfoList.Skip(i1 * songCount).Take(songCount).ToList());
                 });
             }

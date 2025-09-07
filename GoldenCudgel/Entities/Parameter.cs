@@ -1,5 +1,5 @@
 public class Parameter
 {
-    public short threadNum { get; set; }
-    public string? path { get; set; } = "";
+    public short ThreadNum { get; set; }
+    public string? Path { get; set; } = "";
 }
