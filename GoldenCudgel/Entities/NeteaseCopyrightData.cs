@@ -5,29 +5,35 @@ namespace GoldenCudgel.Entities;
 [DataContract]
 public class NeteaseCopyrightData
 {
-    [DataMember(Name = "musicId")] public string MusicId { get; set; } = "";
+     public string MusicId { get; set; } = "";
 
-    [DataMember(Name = "musicName")] public string MusicName { get; set; } = "";
+     public string MusicName { get; set; } = "";
 
-    [DataMember(Name = "artist")] public string[][] Artist { get; set; } = new string[10][];
+     public string[][] Artist { get; set; } = new string[10][];
 
-    [DataMember(Name = "albumId")] public int AlbumId { get; set; }
+     public string AlbumId { get; set; } = "";
 
-    [DataMember(Name = "album")] public string Album { get; set; } = "";
+     public string Album { get; set; } = "";
 
-    [DataMember(Name = "albumPicDocId")] public string AlbumPicDocId { get; set; } = "";
+     public string AlbumPicDocId { get; set; } = "";
 
-    [DataMember(Name = "albumPic")] public string AlbumPic { get; set; } = "";
+     public string AlbumPic { get; set; } = "";
 
-    [DataMember(Name = "bitrate")] public int Bitrate { get; set; }
+     public int Bitrate { get; set; }
 
-    [DataMember(Name = "mp3DocId")] public string Mp3DocId { get; set; } = "";
+     public string Mp3DocId { get; set; } = "";
 
-    [DataMember(Name = "duration")] public int Duration { get; set; }
+     public int Duration { get; set; }
 
-    [DataMember(Name = "mvId")] public string MvId { get; set; } = "";
+     public string MvId { get; set; } = "";
 
-    [DataMember(Name = "alias")] public List<string> Alias { get; set; } = new List<string> { };
+     public List<string> Alias { get; set; } = new List<string> { };
 
-    [DataMember(Name = "format")] public string Format { get; set; } = "";
+     public string Format { get; set; } = "";
+
+     public short Fee { get; set; } = 0;
+
+     public float VolumeDelta { get; set; } = 0.0f;
+     
+     public Privilege? Privilege { get; set; }
 }

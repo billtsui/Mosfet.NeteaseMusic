@@ -112,9 +112,8 @@ public class NcmObject
     public override string ToString()
     {
         return
-            $"Name:{FileName}, " +
-            $"Meta length:{MetaLength} bytes, " +
-            $"Album image length:{AlbumImageLength / 1024} kb, " +
+            $"{FileName}, Meta length:{MetaLength / 1024} kb," +
+            $"Cover image length:{AlbumImageLength / 1024} kb," +
             $"Music data length:{MusicDataArray.Count / 1024 / 1024} MB";
     }
 }

@@ -18,27 +18,12 @@ public class FileCreateHandler : AbstractHandler
 
         var destPath = $"{currentDir + file.Name[..^4]}.{ncmObject.NeteaseCopyrightData.Format}";
 
-        using var stream = new FileStream(destPath, FileMode.Create, FileAccess.Write);
-        stream.Write(ncmObject.MusicDataArray.ToArray());
-        stream.Close();
-
-        //如果是mp4格式，不做tag信息处理
-        if (ncmObject.NeteaseCopyrightData.Format == "mp4")
+        using (var stream = new FileStream(destPath, FileMode.Create, FileAccess.Write))
         {
-            return;
+            stream.Write(ncmObject.MusicDataArray.ToArray());
+            stream.Close();
         }
-
-
-        var musicFile = File.Create(destPath);
-        var tagPic = new Picture(new ByteVector(ncmObject.AlbumImageContentArray));
-        musicFile.Tag.Pictures = [tagPic];
-        musicFile.Tag.Title = ncmObject.NeteaseCopyrightData.MusicName;
-        musicFile.Tag.Album = ncmObject.NeteaseCopyrightData.Album;
-        musicFile.Tag.Performers = [ncmObject.NeteaseCopyrightData.Artist[0][0]];
-        musicFile.Save();
-        musicFile.Dispose();
-
-
+        
         base.Handle(file, fs, ncmObject);
     }
 }

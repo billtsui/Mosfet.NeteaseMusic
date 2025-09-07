@@ -1,17 +1,40 @@
 ﻿using GoldenCudgel.Chain;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
+using CommandLine;
 
 namespace GoldenCudgel;
 
 public class GoldenCudgel
 {
-    private void Run(Parameter parameter)
+    private static short _fileHolder = 30;
+
+    public static void Main(string[] args)
     {
-        var fileInfoList = FileUtils.ReadFileList(parameter.path);
+        Parameter p = new Parameter();
+        Parser.Default.ParseArguments<Options>(args)
+            .WithParsed<Options>(o =>
+            {
+                if (o.Path == null)
+                {
+                    Console.WriteLine("缺少路径参数！");
+                    return;
+                }
+
+                p.path = o.Path;
+                p.threadNum = o.ThreadNum;
+            });
+        Run(p);
+    }
+
+    private static void Run(Parameter parameter)
+    {
+        Console.WriteLine($"路径：{parameter.path}。线程数：{parameter.threadNum}");
+
+        var fileInfoList = FileUtils.ReadFileList(parameter.path).OrderBy(file => file.Name).ToList();
         if (fileInfoList.Count == 0)
         {
-            Console.WriteLine("No such file found.");
+            Console.WriteLine("当前路径未找到ncm文件!");
             return;
         }
 
@@ -22,22 +45,20 @@ public class GoldenCudgel
             directoryInfo?.CreateSubdirectory("convert");
         }
 
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Find {fileInfoList.Count} songs.");
-        if (fileInfoList.Count > 50)
-        {
-            int processorCount = parameter.threadNum;
+        Console.WriteLine($"找到 {fileInfoList.Count} 首歌曲.");
 
-            Task[] tasks = new Task[processorCount];
+        if (fileInfoList.Count > _fileHolder)
+        {
+            Task[] tasks = new Task[parameter.threadNum];
 
             for (var i = 0; i < tasks.Length; i++)
             {
                 var i1 = i;
                 tasks[i] = new Task(() =>
                 {
-                    int songCount = fileInfoList.Count % processorCount == 0
-                        ? fileInfoList.Count / processorCount
-                        : fileInfoList.Count / processorCount + 1;
+                    int songCount = fileInfoList.Count % parameter.threadNum == 0
+                        ? fileInfoList.Count / parameter.threadNum
+                        : fileInfoList.Count / parameter.threadNum + 1;
                     ProcessFile(fileInfoList.Skip(i1 * songCount).Take(songCount).ToList());
                 });
             }
@@ -54,11 +75,10 @@ public class GoldenCudgel
             ProcessFile(fileInfoList);
         }
 
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine("Done!");
+        Console.WriteLine("已完成！");
     }
 
-    private void ProcessFile(List<FileInfo> fileInfoList)
+    private static void ProcessFile(List<FileInfo> fileInfoList)
     {
         var headerHandler = AssembleChain();
 
@@ -68,31 +88,49 @@ public class GoldenCudgel
             {
                 FileName = fileInfo.Name
             };
-
-            using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
+            try
             {
-                headerHandler.Handle(fileInfo, fs, ncmObject);
-                fs.Close();
+                using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
+                {
+                    headerHandler.Handle(fileInfo, fs, ncmObject);
+                    fs.Close();
+                    Console.WriteLine(ncmObject.ToString());
+                }
             }
-            Console.WriteLine(ncmObject.ToString());
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"FileName: {ncmObject.FileName}\n Error: {e}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
     }
 
-    private HeaderHandler AssembleChain()
+    private static HeaderHandler AssembleChain()
     {
         var headerHandler = new HeaderHandler();
-        headerHandler.SetNext(new Jump2Handler())
-                     .SetNext(new Rc4LengthHandler())
-                     .SetNext(new Rc4ContentHandler())
-                     .SetNext(new MetaLengthHandler())
-                     .SetNext(new MetaContentHandler())
-                     .SetNext(new CheckHandler())
-                     .SetNext(new Jump2Handler())
-                     .SetNext(new AlbumImageLengthHandler())
-                     .SetNext(new AlbumImageHandler())
-                     .SetNext(new MusicDataHandler())
-                     .SetNext(new FileCreateHandler());
+        headerHandler.SetNext(new Skip2Handler())
+            .SetNext(new Rc4LengthHandler())
+            .SetNext(new Rc4ContentHandler())
+            .SetNext(new MetaLengthHandler())
+            .SetNext(new MetaContentHandler())
+            .SetNext(new CheckHandler())
+            .SetNext(new Skip5Handler())
+            .SetNext(new AlbumImageLengthHandler())
+            .SetNext(new AlbumImageHandler())
+            .SetNext(new MusicDataHandler())
+            .SetNext(new FileCreateHandler())
+            .SetNext(new TagLibHandler());
 
         return headerHandler;
+    }
+
+    private class Options
+    {
+        [Option('p', "Path", Required = true, HelpText = "网易云音乐下载目录")]
+        public string? Path { get; set; }
+
+        [Option('t', "ThreadNumber", HelpText = "转换线程数。只支持1、2、4、8，默认 1")]
+        public short ThreadNum { get; set; } = 1;
     }
 }

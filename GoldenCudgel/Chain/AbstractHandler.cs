@@ -14,15 +14,6 @@ public abstract class AbstractHandler : IHandler
 
     public virtual void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
     {
-        try
-        {
-            _nextHandler?.Handle(file, fs, ncmObject);
-        }
-        catch (Exception e)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(e);
-            Console.ForegroundColor = ConsoleColor.Green;
-        }
+        _nextHandler?.Handle(file, fs, ncmObject);
     }
 }
