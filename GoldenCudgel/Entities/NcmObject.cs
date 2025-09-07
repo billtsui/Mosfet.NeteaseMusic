@@ -2,117 +2,44 @@ namespace GoldenCudgel.Entities;
 
 public class NcmObject
 {
-    private byte[] _albumImageContentArray = new Byte[] { };
+    public string FileName { get; set; }
 
-    private byte[] _albumImageLengthArray = new byte[] { };
+    public byte[] HeaderArray { get; set; }
 
-    private byte[] _crcArray = new byte[] { };
-    private string _fileName = "";
-    private string _header = "";
+    public string Header { get; set; }
 
-    private byte[] _headerArray = new byte[] { };
-    private string _metaData = "";
-
-    private byte[] _metaDataArray = new byte[] { };
-
-    private byte[] _metaLengthArray = new byte[] { };
-    private List<byte> _musicDataArray = new List<byte>();
-
-    private NeteaseCopyrightData _neteaseCopyrightData = new NeteaseCopyrightData();
-
-    private byte[] _rc4KeyContentArray = new byte[] { };
-
-    private byte[] _rc4KeyLengthArray = new byte[] { };
-
-
-    public string FileName
-    {
-        get => _fileName;
-        set => _fileName = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public byte[] HeaderArray
-    {
-        get => _headerArray;
-        set => _headerArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public string Header
-    {
-        get => _header;
-        set => _header = value ?? throw new ArgumentNullException(nameof(value));
-    }
-
-    public byte[] Rc4KeyLengthArray
-    {
-        get => _rc4KeyLengthArray;
-        set => _rc4KeyLengthArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] Rc4KeyLengthArray { get; set; }
 
     public int Rc4KeyLength { get; set; }
 
-    public byte[] Rc4KeyContentArray
-    {
-        get => _rc4KeyContentArray;
-        set => _rc4KeyContentArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] Rc4KeyContentArray { get; set; }
 
-    public byte[] MetaLengthArray
-    {
-        get => _metaLengthArray;
-        set => _metaLengthArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] MetaLengthArray { get; set; }
 
     public int MetaLength { get; set; }
 
-    public byte[] MetaDataArray
-    {
-        get => _metaDataArray;
-        set => _metaDataArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] MetaDataArray { get; set; }
 
-    public string MetaData
-    {
-        get => _metaData;
-        set => _metaData = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public string MetaData { get; set; }
 
-    public byte[] CrcArray
-    {
-        get => _crcArray;
-        set => _crcArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] CrcArray { get; set; }
 
-    public byte[] AlbumImageLengthArray
-    {
-        get => _albumImageLengthArray;
-        set => _albumImageLengthArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] AlbumImageLengthArray { get; set; }
 
     public int AlbumImageLength { get; set; }
 
-    public byte[] AlbumImageContentArray
-    {
-        get => _albumImageContentArray;
-        set => _albumImageContentArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public byte[] AlbumImageContentArray { get; set; }
 
-    public List<byte> MusicDataArray
-    {
-        get => _musicDataArray;
-        set => _musicDataArray = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public List<byte> MusicDataArray { get; set; }
 
-    public NeteaseCopyrightData NeteaseCopyrightData
-    {
-        get => _neteaseCopyrightData;
-        set => _neteaseCopyrightData = value ?? throw new ArgumentNullException(nameof(value));
-    }
+    public NeteaseCopyrightData NeteaseCopyrightData { get; set; }
+    
+    public string NewFile { get; set; }
 
     public override string ToString()
     {
         return
-            $"{FileName}, Meta length:{MetaLength / 1024} kb," +
+            $"{FileName}, Meta length:{MetaLength} kb," +
             $"Cover image length:{AlbumImageLength / 1024} kb," +
             $"Music data length:{MusicDataArray.Count / 1024 / 1024} MB";
     }

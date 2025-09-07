@@ -1,4 +1,5 @@
-﻿using GoldenCudgel.Chain;
+﻿using System.Diagnostics;
+using GoldenCudgel.Chain;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
 using CommandLine;
@@ -7,24 +8,24 @@ namespace GoldenCudgel;
 
 public class GoldenCudgel
 {
-    private static short _fileHolder = 30;
+    private static readonly short MinFileNum = 20;
 
     public static void Main(string[] args)
     {
         Parameter p = new Parameter();
         Parser.Default.ParseArguments<Options>(args)
+            .WithNotParsed(HandleParseError)
             .WithParsed<Options>(o =>
             {
-                if (o.Path == null)
-                {
-                    Console.WriteLine("缺少路径参数！");
-                    return;
-                }
-
                 p.path = o.Path;
-                p.threadNum = o.ThreadNum;
+                p.threadNum = o.ThreadNum is 1 or 2 or 4 or 8 ? o.ThreadNum : (short)1;
             });
         Run(p);
+    }
+
+    private static void HandleParseError(IEnumerable<Error> errs)
+    {
+        errs.ToList().ForEach(Console.WriteLine);
     }
 
     private static void Run(Parameter parameter)
@@ -47,7 +48,10 @@ public class GoldenCudgel
 
         Console.WriteLine($"找到 {fileInfoList.Count} 首歌曲.");
 
-        if (fileInfoList.Count > _fileHolder)
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
+        if (fileInfoList.Count >= MinFileNum)
         {
             Task[] tasks = new Task[parameter.threadNum];
 
@@ -75,7 +79,14 @@ public class GoldenCudgel
             ProcessFile(fileInfoList);
         }
 
-        Console.WriteLine("已完成！");
+        stopWatch.Stop();
+        TimeSpan ts = stopWatch.Elapsed;
+        // Format and display the TimeSpan value.
+        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"已完成！用时 {elapsedTime}");
     }
 
     private static void ProcessFile(List<FileInfo> fileInfoList)
@@ -93,7 +104,6 @@ public class GoldenCudgel
                 using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
                 {
                     headerHandler.Handle(fileInfo, fs, ncmObject);
-                    fs.Close();
                     Console.WriteLine(ncmObject.ToString());
                 }
             }
@@ -130,7 +140,7 @@ public class GoldenCudgel
         [Option('p', "Path", Required = true, HelpText = "网易云音乐下载目录")]
         public string? Path { get; set; }
 
-        [Option('t', "ThreadNumber", HelpText = "转换线程数。只支持1、2、4、8，默认 1")]
+        [Option('t', "ThreadNumber", HelpText = "转换线程数。只支持1、2、4、8，20首以上歌曲开启多线程处理")]
         public short ThreadNum { get; set; } = 1;
     }
 }

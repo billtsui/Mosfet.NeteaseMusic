@@ -16,9 +16,10 @@ public class FileCreateHandler : AbstractHandler
         if (OperatingSystem.IsMacOS()) currentDir += "/convert/";
         if (OperatingSystem.IsWindows()) currentDir += "\\convert\\";
 
-        var destPath = $"{currentDir + file.Name[..^4]}.{ncmObject.NeteaseCopyrightData.Format}";
+        var newFile = $"{currentDir + file.Name[..^4]}.{ncmObject.NeteaseCopyrightData.Format}";
 
-        using (var stream = new FileStream(destPath, FileMode.Create, FileAccess.Write))
+        ncmObject.NewFile = newFile;
+        using (var stream = new FileStream(newFile, FileMode.Create, FileAccess.Write))
         {
             stream.Write(ncmObject.MusicDataArray.ToArray());
             stream.Close();
