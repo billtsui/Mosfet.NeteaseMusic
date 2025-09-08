@@ -6,20 +6,23 @@ using CommandLine;
 
 namespace GoldenCudgel;
 
-public class GoldenCudgel
+public static class GoldenCudgel
 {
-    private static readonly short MinFileNum = 20;
+    private const short MinFileNum = 20;
+    private static HeaderHandler _headerHandler = new();
 
     public static void Main(string[] args)
     {
         Parameter p = new Parameter();
         Parser.Default.ParseArguments<Options>(args)
             .WithNotParsed(HandleParseError)
-            .WithParsed<Options>(o =>
+            .WithParsed(o =>
             {
                 p.Path = o.Path;
                 p.ThreadNum = o.ThreadNum is 1 or 2 or 4 or 8 ? o.ThreadNum : (short)1;
             });
+
+        _headerHandler = AssembleChain();
         Run(p);
     }
 
@@ -43,7 +46,7 @@ public class GoldenCudgel
         var directoryInfo = fileInfoList[0].Directory?.Parent;
         if (directoryInfo?.GetDirectories("convert").Length == 0)
         {
-            directoryInfo?.CreateSubdirectory("convert");
+            directoryInfo.CreateSubdirectory("convert");
         }
 
         Console.WriteLine($"找到 {fileInfoList.Count} 首歌曲.");
@@ -80,7 +83,7 @@ public class GoldenCudgel
         }
 
         stopWatch.Stop();
-        TimeSpan ts = stopWatch.Elapsed;
+        var ts = stopWatch.Elapsed;
         // Format and display the TimeSpan value.
         string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,
@@ -91,8 +94,6 @@ public class GoldenCudgel
 
     private static void ProcessFile(List<FileInfo> fileInfoList)
     {
-        var headerHandler = AssembleChain();
-
         foreach (var fileInfo in fileInfoList)
         {
             var ncmObject = new NcmObject
@@ -101,11 +102,9 @@ public class GoldenCudgel
             };
             try
             {
-                using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
-                {
-                    headerHandler.Handle(fileInfo, fs, ncmObject);
-                    Console.WriteLine(ncmObject.ToString());
-                }
+                using var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
+                _headerHandler.Handle(fileInfo, fs, ncmObject);
+                Console.WriteLine(ncmObject.ToString());
             }
             catch (Exception e)
             {
@@ -117,30 +116,20 @@ public class GoldenCudgel
     }
 
     private static HeaderHandler AssembleChain()
-    {
-        var headerHandler = new HeaderHandler();
-        headerHandler.SetNext(new Skip2Handler())
-            .SetNext(new Rc4LengthHandler())
-            .SetNext(new Rc4ContentHandler())
-            .SetNext(new MetaLengthHandler())
-            .SetNext(new MetaContentHandler())
-            .SetNext(new CheckHandler())
-            .SetNext(new Skip5Handler())
-            .SetNext(new AlbumImageLengthHandler())
-            .SetNext(new AlbumImageHandler())
-            .SetNext(new MusicDataHandler())
-            .SetNext(new FileCreateHandler())
-            .SetNext(new TagLibHandler());
+    { 
+        _headerHandler.SetNext(new Skip2Handler())
+                     .SetNext(new Rc4LengthHandler())
+                     .SetNext(new Rc4ContentHandler())
+                     .SetNext(new MetaLengthHandler())
+                     .SetNext(new MetaContentHandler())
+                     .SetNext(new CrcHandler())
+                     .SetNext(new Skip5Handler())
+                     .SetNext(new AlbumImageLengthHandler())
+                     .SetNext(new AlbumImageHandler())
+                     .SetNext(new MusicDataHandler())
+                     .SetNext(new FileCreateHandler())
+                     .SetNext(new TagLibHandler());
 
-        return headerHandler;
-    }
-
-    private class Options
-    {
-        [Option('p', "Path", Required = true, HelpText = "网易云音乐下载目录")]
-        public string? Path { get; set; }
-
-        [Option('t', "ThreadNumber", HelpText = "转换线程数。只支持1、2、4、8，20首以上歌曲开启多线程处理")]
-        public short ThreadNum { get; set; } = 1;
+        return _headerHandler;
     }
 }

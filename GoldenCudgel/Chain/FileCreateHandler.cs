@@ -12,19 +12,22 @@ public class FileCreateHandler : AbstractHandler
 {
     public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
     {
-        var currentDir = file.Directory.Parent.FullName;
+        var currentDir = file?.Directory?.Parent?.FullName;
         if (OperatingSystem.IsMacOS()) currentDir += "/convert/";
         if (OperatingSystem.IsWindows()) currentDir += "\\convert\\";
 
-        var newFile = $"{currentDir + file.Name[..^4]}.{ncmObject.NeteaseCopyrightData.Format}";
+        var newFile = $"{currentDir + file?.Name[..^4]}.{ncmObject?.NeteaseCopyrightData?.Format}";
 
-        ncmObject.NewFile = newFile;
-        using (var stream = new FileStream(newFile, FileMode.Create, FileAccess.Write))
+        if (ncmObject != null)
         {
-            stream.Write(ncmObject.MusicDataArray.ToArray());
-            stream.Close();
+            ncmObject.NewFile = newFile;
+            using (var stream = new FileStream(newFile, FileMode.Create, FileAccess.Write))
+            {
+                stream.Write(ncmObject.MusicDataArray.ToArray());
+                stream.Close();
+            }
+
+            base.Handle(file, fs, ncmObject);
         }
-        
-        base.Handle(file, fs, ncmObject);
     }
 }

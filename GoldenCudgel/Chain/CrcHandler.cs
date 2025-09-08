@@ -2,7 +2,7 @@ using GoldenCudgel.Entities;
 
 namespace GoldenCudgel.Chain;
 
-public class CheckHandler : AbstractHandler
+public class CrcHandler : AbstractHandler
 {
     public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
     {
