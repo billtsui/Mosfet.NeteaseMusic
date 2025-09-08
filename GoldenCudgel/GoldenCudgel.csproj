@@ -6,6 +6,15 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <LangVersion>default</LangVersion>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Authors>Bill Tsui</Authors>
+        <FileVersion>1.0.0</FileVersion>
+        <NeutralLanguage>zh-Hans-CN</NeutralLanguage>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DebugSymbols>false</DebugSymbols>
+      <DebugType>none</DebugType>
     </PropertyGroup>
 
     <ItemGroup>

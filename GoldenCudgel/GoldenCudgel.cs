@@ -15,20 +15,25 @@ public static class GoldenCudgel
     {
         Parameter p = new Parameter();
         Parser.Default.ParseArguments<Options>(args)
-            .WithNotParsed(HandleParseError)
             .WithParsed(o =>
             {
                 p.Path = o.Path;
                 p.ThreadNum = o.ThreadNum is 1 or 2 or 4 or 8 ? o.ThreadNum : (short)1;
             });
 
+        if (string.IsNullOrEmpty(p.Path)) return;
         _headerHandler = AssembleChain();
         Run(p);
     }
 
     private static void HandleParseError(IEnumerable<Error> errs)
     {
-        errs.ToList().ForEach(Console.WriteLine);
+        foreach (var error in errs.ToList().Where(error => error.Tag == ErrorType.MissingRequiredOptionError))
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("参数path必须传入！");
+            Console.ResetColor();
+        }
     }
 
     private static void Run(Parameter parameter)
