@@ -13,25 +13,36 @@ public class TagLibHandler : AbstractHandler
         {
             return;
         }
-        
-        //图片从track下载目录加载，格式为track-musicId.jpg
-        var picName = $"track-{ncmObject?.NeteaseCopyrightData?.MusicId}.jpg";
-        var picPath = OperatingSystem.IsMacOS()
-            ? $"{file?.Directory?.FullName}/meta/{picName}"
-            : $@"{file?.Directory?.FullName}\\meta\\{picName}";
 
+        /* MacOS客户端图片从track下载目录加载，格式为track-musicId.jpg
+         * Windows客户端没有track目录，仍然使用原方式
+         */
         var musicFile = File.Create(ncmObject?.NewFile);
-        using (var picStream = new FileStream(picPath, FileMode.Open, FileAccess.Read))
+        var tagPic = new Picture();
+        if (OperatingSystem.IsMacOS())
         {
-            byte[] picBytes = new byte[picStream.Length];
-            var readResult = picStream.Read(picBytes);
-            if (readResult > 0)
+            var picName = $"track-{ncmObject?.NeteaseCopyrightData?.MusicId}.jpg";
+            var picPath = OperatingSystem.IsMacOS()
+                ? $"{file?.Directory?.FullName}/meta/{picName}"
+                : $@"{file?.Directory?.FullName}\\meta\\{picName}";
+            using (var picStream = new FileStream(picPath, FileMode.Open, FileAccess.Read))
             {
-                var tagPic = new Picture(new ByteVector(picBytes));
-                musicFile.Tag.Pictures = [tagPic];
+                byte[] picBytes = new byte[picStream.Length];
+                var readResult = picStream.Read(picBytes);
+                if (readResult > 0)
+                {
+                    tagPic = new Picture(new ByteVector(picBytes));
+                }
             }
         }
-        
+        else
+        {
+            tagPic = new Picture(new ByteVector(ncmObject?.AlbumImageContentArray));
+        }
+
+        musicFile.Tag.Pictures = [tagPic];
+
+
         musicFile.Tag.Title = ncmObject.NeteaseCopyrightData.MusicName;
         musicFile.Tag.Album = ncmObject.NeteaseCopyrightData.Album;
         musicFile.Tag.Performers = [ncmObject.NeteaseCopyrightData.Artist[0][0]];
