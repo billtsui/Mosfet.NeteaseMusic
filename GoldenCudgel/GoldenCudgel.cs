@@ -8,7 +8,7 @@ namespace GoldenCudgel;
 
 public static class GoldenCudgel
 {
-    private const short MinFileNum = 20;
+    private const short MinFileCount = 20;
     private static HeaderHandler _headerHandler = new();
 
     public static void Main(string[] args)
@@ -59,7 +59,7 @@ public static class GoldenCudgel
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        if (fileInfoList.Count >= MinFileNum)
+        if (fileInfoList.Count >= MinFileCount)
         {
             Task[] tasks = new Task[parameter.ThreadNum];
 
