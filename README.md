@@ -3,4 +3,6 @@
 
 
 
-This is a tool that can convert .ncm files to .flac or .mp3 files.
+This tool can convert files with the .ncm extension to either the flac or mp3 format.
+
+The entire project adopts a chained responsibility pattern, featuring a clear structure and relatively straightforward code.
