@@ -1,3 +1,4 @@
+using System.Buffers;
 using GoldenCudgel.Entities;
 
 namespace GoldenCudgel.Chain;
@@ -6,11 +7,12 @@ public class MetaLengthHandler : AbstractHandler
 {
     public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
     {
-        var metaLengthArray = new byte[4];
-        var readResult = fs.Read(metaLengthArray, 0, metaLengthArray.Length);
-        ncmObject.MetaLengthArray = metaLengthArray;
-        ncmObject.MetaLength = BitConverter.ToInt32(metaLengthArray, 0);
+        short metaLength = 4;
+        var metaLengthArray = ArrayPool<byte>.Shared.Rent(metaLength);
+        var readResult = fs.Read(metaLengthArray, 0, metaLength);
+        ncmObject.MetaLength = BitConverter.ToInt32(metaLengthArray.AsSpan(0, metaLength));
 
+        ArrayPool<byte>.Shared.Return(metaLengthArray);
         base.Handle(file, fs, ncmObject);
     }
 }

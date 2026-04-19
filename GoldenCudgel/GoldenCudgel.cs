@@ -113,17 +113,17 @@ public static class GoldenCudgel
     private static HeaderHandler AssembleChain()
     { 
         _headerHandler.SetNext(new Skip2Handler())
-                     .SetNext(new Rc4LengthHandler())
-                     .SetNext(new Rc4ContentHandler())
-                     .SetNext(new MetaLengthHandler())
-                     .SetNext(new MetaContentHandler())
-                     .SetNext(new CrcHandler())
-                     .SetNext(new Skip5Handler())
-                     .SetNext(new AlbumImageLengthHandler())
-                     .SetNext(new AlbumImageHandler())
-                     .SetNext(new MusicDataHandler())
-                     .SetNext(new FileCreateHandler())
-                     .SetNext(new TagLibHandler());
+                      .SetNext(new Rc4LengthHandler())
+                      .SetNext(new Rc4KeyHandler())
+                      .SetNext(new MetaLengthHandler())
+                      .SetNext(new MetaContentHandler())
+                      .SetNext(new CrcHandler())
+                      .SetNext(new Skip5Handler())
+                      .SetNext(new AlbumImageLengthHandler())
+                      .SetNext(new AlbumImageHandler())
+                      .SetNext(new MusicDataHandler())
+                      .SetNext(new FileCreateHandler())
+                      .SetNext(new TagLibHandler());
 
         return _headerHandler;
     }

@@ -3,23 +3,16 @@ namespace GoldenCudgel.Entities;
 public class NcmObject
 {
     public string? FileName { get; init; }
-
-    public byte[]? HeaderArray { get; set; }
-
+    
     public string? Header { get; set; }
-
-    public byte[]? Rc4KeyLengthArray { get; set; }
-
+    
     public int Rc4KeyLength { get; set; }
 
     public byte[]? Rc4KeyContentArray { get; set; }
 
-    public byte[]? MetaLengthArray { get; set; }
 
     public int MetaLength { get; set; }
-
-    public byte[]? MetaDataArray { get; set; }
-
+    
     public string? MetaData { get; set; }
 
     public byte[]? CrcArray { get; set; }
