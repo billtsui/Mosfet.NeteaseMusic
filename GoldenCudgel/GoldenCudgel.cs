@@ -13,7 +13,7 @@ public static class GoldenCudgel
 
     public static void Main(string[] args)
     {
-        Parameter p = new Parameter();
+        var p = new Parameter();
         Parser.Default.ParseArguments<Options>(args)
             .WithParsed(o =>
             {
@@ -25,17 +25,7 @@ public static class GoldenCudgel
         _headerHandler = AssembleChain();
         Run(p);
     }
-
-    private static void HandleParseError(IEnumerable<Error> errs)
-    {
-        foreach (var error in errs.ToList().Where(error => error.Tag == ErrorType.MissingRequiredOptionError))
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("参数path必须传入！");
-            Console.ResetColor();
-        }
-    }
-
+    
     private static void Run(Parameter parameter)
     {
         Console.WriteLine($"路径：{parameter.Path}。线程数：{parameter.ThreadNum}");
