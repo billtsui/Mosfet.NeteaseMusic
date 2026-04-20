@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 using GoldenCudgel.Chain;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
@@ -25,7 +26,7 @@ public static class GoldenCudgel
         _headerHandler = AssembleChain();
         Run(p);
     }
-    
+
     private static void Run(Parameter parameter)
     {
         Console.WriteLine($"路径：{parameter.Path}。线程数：{parameter.ThreadNum}");
@@ -55,20 +56,17 @@ public static class GoldenCudgel
 
             for (var i = 0; i < tasks.Length; i++)
             {
-                var i1 = i;
+                int tempI = i;
                 tasks[i] = new Task(() =>
                 {
                     int songCount = fileInfoList.Count % parameter.ThreadNum == 0
                         ? fileInfoList.Count / parameter.ThreadNum
                         : fileInfoList.Count / parameter.ThreadNum + 1;
-                    ProcessFile(fileInfoList.Skip(i1 * songCount).Take(songCount).ToList());
+                    ProcessFile(fileInfoList.Skip(tempI * songCount).Take(songCount).ToList());
                 });
             }
 
-            foreach (var task in tasks)
-            {
-                task.Start();
-            }
+            tasks.AsParallel().ForAll(t => t.Start());
 
             Task.WaitAll(tasks.ToArray());
         }
@@ -89,6 +87,9 @@ public static class GoldenCudgel
 
     private static void ProcessFile(List<FileInfo> fileInfoList)
     {
+        var maxLength = fileInfoList.OrderByDescending(f => f.Length).First().Length;
+        var shareArray = new byte[maxLength];
+        
         foreach (var fileInfo in fileInfoList)
         {
             var ncmObject = new NcmObject
@@ -98,7 +99,7 @@ public static class GoldenCudgel
             try
             {
                 using var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
-                _headerHandler.Handle(fileInfo, fs, ncmObject);
+                _headerHandler.Handle(fileInfo, fs, shareArray, ncmObject);
                 Console.WriteLine(ncmObject.ToString());
             }
             catch (Exception e)
@@ -107,23 +108,27 @@ public static class GoldenCudgel
                 Console.WriteLine($"FileName: {ncmObject.FileName}\n Error: {e}");
                 Console.ForegroundColor = ConsoleColor.White;
             }
+            finally
+            {
+                Array.Clear(shareArray, 0, shareArray.Length);
+            }
         }
     }
 
     private static HeaderHandler AssembleChain()
-    { 
+    {
         _headerHandler.SetNext(new Skip2Handler())
-                      .SetNext(new Rc4LengthHandler())
-                      .SetNext(new Rc4KeyHandler())
-                      .SetNext(new MetaLengthHandler())
-                      .SetNext(new MetaContentHandler())
-                      .SetNext(new CrcHandler())
-                      .SetNext(new Skip5Handler())
-                      .SetNext(new AlbumImageLengthHandler())
-                      .SetNext(new AlbumImageHandler())
-                      .SetNext(new MusicDataHandler())
-                      .SetNext(new FileCreateHandler())
-                      .SetNext(new TagLibHandler());
+            .SetNext(new Rc4KeyLengthHandler())
+            .SetNext(new Rc4KeyHandler())
+            .SetNext(new MetaLengthHandler())
+            .SetNext(new MetaContentHandler())
+            .SetNext(new CrcHandler())
+            .SetNext(new Skip5Handler())
+            .SetNext(new AlbumImageLengthHandler())
+            .SetNext(new AlbumImageHandler())
+            .SetNext(new MusicDataHandler())
+            .SetNext(new FileCreateHandler());
+        // .SetNext(new TagLibHandler());
 
         return _headerHandler;
     }

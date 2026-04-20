@@ -4,12 +4,10 @@ namespace GoldenCudgel.Chain;
 
 public class CrcHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
     {
-        var crcArray = new byte[4];
-        var readResult = fs.Read(crcArray, 0, crcArray.Length);
-        ncmObject.CrcArray = crcArray;
+        fs.Seek(4, SeekOrigin.Current);
 
-        base.Handle(file, fs, ncmObject);
+        base.Handle(file, fs, shareArray, ncmObject);
     }
 }

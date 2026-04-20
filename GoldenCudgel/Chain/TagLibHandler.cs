@@ -6,7 +6,7 @@ namespace GoldenCudgel.Chain;
 
 public class TagLibHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
     {
         //如果是mp4格式，不做tag信息处理
         if (ncmObject?.NeteaseCopyrightData?.Format is "mp4" or "mp3")
@@ -27,11 +27,11 @@ public class TagLibHandler : AbstractHandler
                 : $@"{file?.Directory?.FullName}\\meta\\{picName}";
             using (var picStream = new FileStream(picPath, FileMode.Open, FileAccess.Read))
             {
-                byte[] picBytes = new byte[picStream.Length];
-                var readResult = picStream.Read(picBytes);
+                int count = (int)picStream.Length;
+                var readResult = picStream.Read(shareArray, 0, count);
                 if (readResult > 0)
                 {
-                    tagPic = new Picture(new ByteVector(picBytes));
+                    tagPic = new Picture(new ByteVector(shareArray[0..count]));
                 }
             }
         }
@@ -49,6 +49,6 @@ public class TagLibHandler : AbstractHandler
         musicFile.Save();
         musicFile.Dispose();
 
-        base.Handle(file, fs, ncmObject);
+        base.Handle(file, fs, shareArray, ncmObject);
     }
 }

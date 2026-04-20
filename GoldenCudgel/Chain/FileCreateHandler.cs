@@ -10,7 +10,7 @@ namespace GoldenCudgel.Chain;
  */
 public class FileCreateHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
     {
         var currentDir = file?.Directory?.Parent?.FullName;
         if (OperatingSystem.IsMacOS()) currentDir += "/convert/";
@@ -23,11 +23,11 @@ public class FileCreateHandler : AbstractHandler
             ncmObject.NewFile = newFile;
             using (var stream = new FileStream(newFile, FileMode.Create, FileAccess.Write))
             {
-                stream.Write(ncmObject.MusicDataArray.ToArray());
+                stream.Write(shareArray, 0, ncmObject.MusicDataArrayLength);
                 stream.Close();
             }
 
-            base.Handle(file, fs, ncmObject);
+            base.Handle(file, fs, shareArray, ncmObject);
         }
     }
 }

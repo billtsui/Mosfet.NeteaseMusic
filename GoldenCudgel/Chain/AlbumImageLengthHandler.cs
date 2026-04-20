@@ -4,14 +4,12 @@ namespace GoldenCudgel.Chain;
 
 public class AlbumImageLengthHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
     {
-        var albumImageArray = new byte[4];
-        var readResult = fs.Read(albumImageArray, 0, albumImageArray.Length);
+        var readResult = fs.Read(shareArray, 0, 4);
 
-        ncmObject.AlbumImageLengthArray = albumImageArray;
-        ncmObject.AlbumImageLength = BitConverter.ToInt32(albumImageArray, 0);
+        ncmObject.AlbumImageLength = BitConverter.ToInt32(shareArray[0..4], 0);
 
-        base.Handle(file, fs, ncmObject);
+        base.Handle(file, fs, shareArray, ncmObject);
     }
 }

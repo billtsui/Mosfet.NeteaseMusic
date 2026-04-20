@@ -10,20 +10,15 @@ public class NcmObject
 
     public byte[]? Rc4KeyContentArray { get; set; }
 
-
     public int MetaLength { get; set; }
     
     public string? MetaData { get; set; }
 
-    public byte[]? CrcArray { get; set; }
-
-    public byte[]? AlbumImageLengthArray { get; set; }
-
+    public int MusicDataArrayLength { get; set; }
     public int AlbumImageLength { get; set; }
 
     public byte[]? AlbumImageContentArray { get; set; }
 
-    public List<byte> MusicDataArray { get; set; } = [];
 
     public NeteaseCopyrightData? NeteaseCopyrightData { get; set; }
     
@@ -34,6 +29,6 @@ public class NcmObject
         return
             $"{FileName}, Meta length:{MetaLength} kb," +
             $"Cover image length:{AlbumImageLength / 1024} kb," +
-            $"Music data length:{MusicDataArray.Count / 1024 / 1024} MB";
+            $"Music data length:{MusicDataArrayLength / 1024 / 1024} MB";
     }
 }
