@@ -8,18 +8,15 @@ public class NcmObject
     
     public int Rc4KeyLength { get; set; }
 
-    public byte[]? Rc4KeyContentArray { get; set; }
-
+    public int Rc4KeyContentStart { get; set; }
+    
     public int MetaLength { get; set; }
     
     public string? MetaData { get; set; }
 
     public int MusicDataArrayLength { get; set; }
     public int AlbumImageLength { get; set; }
-
-    public byte[]? AlbumImageContentArray { get; set; }
-
-
+    
     public NeteaseCopyrightData? NeteaseCopyrightData { get; set; }
     
     public string? NewFile { get; set; }

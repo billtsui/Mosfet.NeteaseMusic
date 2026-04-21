@@ -9,7 +9,6 @@ public class AlbumImageHandler : AbstractHandler
         var length = ncmObject.AlbumImageLength;
         var readResult = fs.Read(shareArray, 0, length);
 
-        ncmObject.AlbumImageContentArray = shareArray[0..length];
         base.Handle(file, fs, shareArray, ncmObject);
     }
 }

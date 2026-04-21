@@ -8,10 +8,10 @@ public class MusicDataHandler : AbstractHandler
     public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
     {
         var rc4 = new RC4();
-        rc4.KSA(ncmObject.Rc4KeyContentArray);
-        var buffer = new byte[0x8000];
+        rc4.KSA(shareArray[ncmObject.Rc4KeyContentStart..]);
+        var buffer = new byte[1024];
         Array.Clear(shareArray, 0, shareArray.Length);
-        int offset = 0;
+        int offset = ncmObject.AlbumImageLength + 0;
         for (int len; (len = fs.Read(buffer)) > 0;)
         {
             rc4.PRGA(buffer, len);

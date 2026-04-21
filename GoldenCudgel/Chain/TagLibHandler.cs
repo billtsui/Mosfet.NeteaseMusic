@@ -37,7 +37,7 @@ public class TagLibHandler : AbstractHandler
         }
         else
         {
-            tagPic = new Picture(new ByteVector(ncmObject?.AlbumImageContentArray));
+            tagPic = new Picture(new ByteVector(shareArray[0..ncmObject.AlbumImageLength]));
         }
 
         musicFile.Tag.Pictures = [tagPic];

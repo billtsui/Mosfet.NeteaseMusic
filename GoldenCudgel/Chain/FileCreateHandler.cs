@@ -23,7 +23,7 @@ public class FileCreateHandler : AbstractHandler
             ncmObject.NewFile = newFile;
             using (var stream = new FileStream(newFile, FileMode.Create, FileAccess.Write))
             {
-                stream.Write(shareArray, 0, ncmObject.MusicDataArrayLength);
+                stream.Write(shareArray, ncmObject.AlbumImageLength, ncmObject.MusicDataArrayLength);
                 stream.Close();
             }
 
