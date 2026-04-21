@@ -117,6 +117,7 @@ public static class GoldenCudgel
 
     private static HeaderHandler AssembleChain()
     {
+        // .SetNext(new TagLibHandler());
         _headerHandler.SetNext(new Skip2Handler())
             .SetNext(new Rc4KeyLengthHandler())
             .SetNext(new Rc4KeyHandler())
@@ -128,7 +129,6 @@ public static class GoldenCudgel
             .SetNext(new AlbumImageHandler())
             .SetNext(new MusicDataHandler())
             .SetNext(new FileCreateHandler());
-        // .SetNext(new TagLibHandler());
 
         return _headerHandler;
     }

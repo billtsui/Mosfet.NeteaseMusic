@@ -19,8 +19,8 @@ public class Rc4KeyHandler : AbstractHandler
 
         var aesDecrypt = AESUtil.Decrypt(shareArray.AsSpan(0, rc4KeyLength).ToArray(), CoreKey);
 
+        //shareArray 的结尾存 keyArray
         int keyArrayLength = aesDecrypt.Length - 17;
-        // ncmObject.Rc4KeyContentArray = new byte[keyArrayLength];
         ncmObject.Rc4KeyContentStart = shareArray.Length - keyArrayLength;
         Array.Copy(aesDecrypt, 17, shareArray, ncmObject.Rc4KeyContentStart, keyArrayLength);
 
