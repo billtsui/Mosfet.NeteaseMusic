@@ -19,11 +19,9 @@ public class Rc4KeyHandler : AbstractHandler
         for (var i = 0; i < rc4KeyLength; i++) temp[i] ^= 0x64;
 
         var aesDecrypt = AESUtil.Decrypt(temp, CoreKey);
-        if (null == rc4KeyDataArray)
-            rc4KeyDataArray = new byte[aesDecrypt.Length - 17];
+        ncmObject.Rc4KeyLength = aesDecrypt.Length - 17;
         Array.Copy(aesDecrypt, 17, rc4KeyDataArray, 0, aesDecrypt.Length - 17);
-
-
+        
         base.Handle(file, fs, rc4KeyDataArray, pictureDataArray, ncmObject);
     }
 }

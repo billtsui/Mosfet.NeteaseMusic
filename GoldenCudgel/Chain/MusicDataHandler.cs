@@ -1,3 +1,4 @@
+using ATL;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
 
@@ -9,8 +10,8 @@ public class MusicDataHandler : AbstractHandler
         NcmObject ncmObject)
     {
         var rc4 = new RC4();
-        rc4.KSA(rc4KeyDataArray);
-        var buffer = new byte[4096];
+        rc4.KSA(rc4KeyDataArray[0..ncmObject.Rc4KeyLength]);
+        var buffer = new byte[32 * 1024];
 
         int offset = 0;
         int sum = 0;
@@ -30,8 +31,13 @@ public class MusicDataHandler : AbstractHandler
                 sum += len;
             }
 
+            stream.Flush();
             stream.Close();
         }
+
+        Track track = new Track(newFile);
+        track.EmbeddedPictures.Add(PictureInfo.fromBinaryData(pictureDataArray));
+        track.Save();
 
 
         ncmObject.MusicDataArrayLength = sum;

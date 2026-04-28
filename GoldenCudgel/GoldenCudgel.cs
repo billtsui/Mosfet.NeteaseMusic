@@ -92,8 +92,8 @@ public static class GoldenCudgel
         //给图片5MB空间
         var pictureDataArray = new byte[5 * 1024 * 1024];
 
-        //rc4数据用第一首歌的大小
-        byte[] rc4KeyDataArray = null;
+        //rc4给1024kb
+        byte[] rc4KeyDataArray = new byte[1024 * 1024];
 
         foreach (var fileInfo in fileInfoList)
         {
@@ -119,6 +119,7 @@ public static class GoldenCudgel
             finally
             {
                 Array.Clear(pictureDataArray, 0, pictureDataArray.Length);
+                Array.Clear(rc4KeyDataArray, 0, rc4KeyDataArray.Length);
             }
         }
     }
