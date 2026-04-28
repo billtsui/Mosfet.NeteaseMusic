@@ -19,7 +19,7 @@
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.9.1" />
-      <PackageReference Include="TagLibSharp" Version="2.3.0" />
+      <PackageReference Include="z440.atl.core" Version="7.13.0" />
     </ItemGroup>
 
 </Project>

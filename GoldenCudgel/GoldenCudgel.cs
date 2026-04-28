@@ -87,9 +87,14 @@ public static class GoldenCudgel
 
     private static void ProcessFile(List<FileInfo> fileInfoList)
     {
-        var maxLength = fileInfoList.OrderByDescending(f => f.Length).First().Length;
-        var shareArray = new byte[maxLength];
-        
+        fileInfoList = fileInfoList.OrderByDescending(f => f.Length).ToList();
+
+        //给图片5MB空间
+        var pictureDataArray = new byte[5 * 1024 * 1024];
+
+        //rc4数据用第一首歌的大小
+        byte[] rc4KeyDataArray = null;
+
         foreach (var fileInfo in fileInfoList)
         {
             var ncmObject = new NcmObject
@@ -98,8 +103,11 @@ public static class GoldenCudgel
             };
             try
             {
-                using var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read);
-                _headerHandler.Handle(fileInfo, fs, shareArray, ncmObject);
+                using (var fs = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read))
+                {
+                    _headerHandler.Handle(fileInfo, fs, rc4KeyDataArray, pictureDataArray, ncmObject);
+                }
+
                 Console.WriteLine(ncmObject.ToString());
             }
             catch (Exception e)
@@ -110,14 +118,13 @@ public static class GoldenCudgel
             }
             finally
             {
-                Array.Clear(shareArray, 0, shareArray.Length);
+                Array.Clear(pictureDataArray, 0, pictureDataArray.Length);
             }
         }
     }
 
     private static HeaderHandler AssembleChain()
     {
-        // .SetNext(new TagLibHandler());
         _headerHandler.SetNext(new Skip2Handler())
             .SetNext(new Rc4KeyLengthHandler())
             .SetNext(new Rc4KeyHandler())
@@ -127,8 +134,7 @@ public static class GoldenCudgel
             .SetNext(new Skip5Handler())
             .SetNext(new AlbumImageLengthHandler())
             .SetNext(new AlbumImageHandler())
-            .SetNext(new MusicDataHandler())
-            .SetNext(new FileCreateHandler());
+            .SetNext(new MusicDataHandler());
 
         return _headerHandler;
     }

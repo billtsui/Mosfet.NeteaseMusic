@@ -5,12 +5,13 @@ namespace GoldenCudgel.Chain;
 
 public class MetaLengthHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] rc4KeyDataArray, byte[] pictureDataArray, NcmObject ncmObject)
     {
         short metaLength = 4;
-        var readResult = fs.Read(shareArray, 0, metaLength);
-        ncmObject.MetaLength = BitConverter.ToInt32(shareArray.AsSpan(0, metaLength));
+        byte[] temp = new byte[metaLength];
+        var readResult = fs.Read(temp, 0, metaLength);
+        ncmObject.MetaLength = BitConverter.ToInt32(temp);
 
-        base.Handle(file, fs, shareArray, ncmObject);
+        base.Handle(file, fs, rc4KeyDataArray, pictureDataArray, ncmObject);
     }
 }

@@ -6,11 +6,11 @@ namespace GoldenCudgel.Chain;
 
 public class HeaderHandler : AbstractHandler
 {
-    public override void Handle(FileInfo file, FileStream fs, byte[] shareArray, NcmObject ncmObject)
+    public override void Handle(FileInfo file, FileStream fs, byte[] rc4KeyDataArray, byte[] pictureDataArray,
+        NcmObject ncmObject)
     {
-        var readResult = fs.Read(shareArray, 0, 8);
-        ncmObject.Header = Encoding.UTF8.GetString(shareArray[0..8]);
+        fs.Seek(8, SeekOrigin.Begin);
 
-        base.Handle(file, fs, shareArray, ncmObject);
+        base.Handle(file, fs, rc4KeyDataArray, pictureDataArray, ncmObject);
     }
 }
