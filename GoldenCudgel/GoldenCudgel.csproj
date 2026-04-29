@@ -6,10 +6,12 @@
         <Nullable>enable</Nullable>
         <OutputType>Exe</OutputType>
         <LangVersion>default</LangVersion>
-        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <AssemblyVersion>1.0.3</AssemblyVersion>
         <Authors>Bill Tsui</Authors>
-        <FileVersion>1.0.0</FileVersion>
+        <FileVersion>1.0.3</FileVersion>
         <NeutralLanguage>zh-Hans-CN</NeutralLanguage>
+        <Version>1.0.3</Version>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
