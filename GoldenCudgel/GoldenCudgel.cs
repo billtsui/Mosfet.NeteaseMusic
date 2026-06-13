@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using GoldenCudgel.Chain;
 using GoldenCudgel.Entities;
 using GoldenCudgel.Utils;
@@ -7,9 +6,9 @@ using CommandLine;
 
 namespace GoldenCudgel;
 
-public static class GoldenCudgel
+public class GoldenCudgel
 {
-    private const short MinFileCount = 20;
+    private const short MinFileNum = 20;
     private static HeaderHandler _headerHandler = new();
 
     public static void Main(string[] args)
@@ -24,33 +23,51 @@ public static class GoldenCudgel
 
         if (string.IsNullOrEmpty(p.Path)) return;
         _headerHandler = AssembleChain();
-        Run(p);
+        GoldenCudgel goldenCudgel =  new GoldenCudgel();
+        goldenCudgel.Run(p);
     }
 
-    private static void Run(Parameter parameter)
+    private void Run(Parameter parameter)
     {
-        Console.WriteLine($"路径：{parameter.Path}。线程数：{parameter.ThreadNum}");
+        Console.WriteLine($"Path：{parameter.Path}。Thread Num：{parameter.ThreadNum}");
 
-        var fileInfoList = FileUtils.ReadFileList(parameter.Path).OrderBy(file => file.Name).ToList();
+        var fileInfoList = FileUtils.ReadFileList(parameter.Path!, ".ncm").OrderBy(file => file.Name).ToList();
         if (fileInfoList.Count == 0)
         {
-            Console.WriteLine("当前路径未找到ncm文件!");
+            Console.WriteLine("当前目录下没有找到ncm文件!");
             return;
         }
 
-        //创建单独的写入目录
+
         var directoryInfo = fileInfoList[0].Directory?.Parent;
         if (directoryInfo?.GetDirectories("convert").Length == 0)
         {
+            //创建单独的写入目录
             directoryInfo.CreateSubdirectory("convert");
         }
+        else
+        {
+            //移除已经转换过的文件
+            var convertedFileList =
+                FileUtils.ReadFileList(directoryInfo!.GetDirectories("convert")[0].FullName, ".flac");
+            if (convertedFileList.Count != 0)
+            {
+                var convertedFileNameSet = convertedFileList.Select(f => Path.GetFileNameWithoutExtension(f.Name)).ToHashSet();
+                fileInfoList.RemoveAll(file => convertedFileNameSet.Contains(Path.GetFileNameWithoutExtension(file.Name)));
+            }
+        }
 
+        if (fileInfoList.Count == 0)
+        {
+            Console.WriteLine("暂无需要转换的歌曲.");
+            return;
+        }
         Console.WriteLine($"找到 {fileInfoList.Count} 首歌曲.");
 
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        if (fileInfoList.Count >= MinFileCount)
+        if (fileInfoList.Count >= MinFileNum)
         {
             Task[] tasks = new Task[parameter.ThreadNum];
 
@@ -68,7 +85,7 @@ public static class GoldenCudgel
 
             tasks.AsParallel().ForAll(t => t.Start());
 
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(tasks);
         }
         else
         {
@@ -85,7 +102,7 @@ public static class GoldenCudgel
         Console.WriteLine($"已完成！用时 {elapsedTime}");
     }
 
-    private static void ProcessFile(List<FileInfo> fileInfoList)
+    private void ProcessFile(List<FileInfo> fileInfoList)
     {
         fileInfoList = fileInfoList.OrderByDescending(f => f.Length).ToList();
 
@@ -127,15 +144,15 @@ public static class GoldenCudgel
     private static HeaderHandler AssembleChain()
     {
         _headerHandler.SetNext(new Skip2Handler())
-                      .SetNext(new Rc4KeyLengthHandler())
-                      .SetNext(new Rc4KeyHandler())
-                      .SetNext(new MetaLengthHandler())
-                      .SetNext(new MetaContentHandler())
-                      .SetNext(new CrcHandler())
-                      .SetNext(new Skip5Handler())
-                      .SetNext(new AlbumImageLengthHandler())
-                      .SetNext(new AlbumImageHandler())
-                      .SetNext(new MusicDataHandler());
+            .SetNext(new Rc4KeyLengthHandler())
+            .SetNext(new Rc4KeyHandler())
+            .SetNext(new MetaLengthHandler())
+            .SetNext(new MetaContentHandler())
+            .SetNext(new CrcHandler())
+            .SetNext(new Skip5Handler())
+            .SetNext(new AlbumImageLengthHandler())
+            .SetNext(new AlbumImageHandler())
+            .SetNext(new MusicDataHandler());
 
         return _headerHandler;
     }
