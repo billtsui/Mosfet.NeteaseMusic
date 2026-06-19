@@ -1,8 +1,8 @@
 using System.Buffers;
-using GoldenCudgel.Entities;
-using GoldenCudgel.Utils;
+using Mosfet.NeteaseMusic.Entities;
+using Mosfet.NeteaseMusic.Utils;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
 public class Rc4KeyHandler : AbstractHandler
 {

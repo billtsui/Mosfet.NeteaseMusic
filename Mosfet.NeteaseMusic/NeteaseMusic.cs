@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics;
-using GoldenCudgel.Chain;
-using GoldenCudgel.Entities;
-using GoldenCudgel.Utils;
 using CommandLine;
+using Mosfet.NeteaseMusic.Chain;
+using Mosfet.NeteaseMusic.Entities;
+using Mosfet.NeteaseMusic.Utils;
 
-namespace GoldenCudgel;
+namespace Mosfet.NeteaseMusic;
 
-public class GoldenCudgel
+public class NeteaseMusic
 {
     private const short MinFileNum = 20;
     private static HeaderHandler _headerHandler = new();
@@ -23,8 +23,8 @@ public class GoldenCudgel
 
         if (string.IsNullOrEmpty(p.Path)) return;
         _headerHandler = AssembleChain();
-        GoldenCudgel goldenCudgel =  new GoldenCudgel();
-        goldenCudgel.Run(p);
+        NeteaseMusic neteaseMusic =  new NeteaseMusic();
+        neteaseMusic.Run(p);
     }
 
     private void Run(Parameter parameter)

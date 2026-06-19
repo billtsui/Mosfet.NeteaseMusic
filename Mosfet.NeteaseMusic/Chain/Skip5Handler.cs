@@ -1,16 +1,13 @@
-using System.Buffers;
-using System.Text;
-using GoldenCudgel.Entities;
+using Mosfet.NeteaseMusic.Entities;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
-public class HeaderHandler : AbstractHandler
+public class Skip5Handler : AbstractHandler
 {
     public override void Handle(FileInfo file, FileStream fs, byte[] rc4KeyDataArray, byte[] pictureDataArray,
         NcmObject ncmObject)
     {
-        fs.Seek(8, SeekOrigin.Begin);
-
+        fs.Seek(5, SeekOrigin.Current);
         base.Handle(file, fs, rc4KeyDataArray, pictureDataArray, ncmObject);
     }
 }

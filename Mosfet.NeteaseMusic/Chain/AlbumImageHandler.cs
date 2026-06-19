@@ -1,6 +1,6 @@
-using GoldenCudgel.Entities;
+using Mosfet.NeteaseMusic.Entities;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
 public class AlbumImageHandler : AbstractHandler
 {

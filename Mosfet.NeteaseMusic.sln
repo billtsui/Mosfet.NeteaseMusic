@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldenCudgel", "GoldenCudgel\GoldenCudgel.csproj", "{96832A1D-6393-407B-BBBF-7832EED53327}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mosfet.NeteaseMusic", "Mosfet.NeteaseMusic\Mosfet.NeteaseMusic.csproj", "{96832A1D-6393-407B-BBBF-7832EED53327}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

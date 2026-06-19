@@ -1,7 +1,7 @@
 using System.Buffers;
-using GoldenCudgel.Entities;
+using Mosfet.NeteaseMusic.Entities;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
 public class MetaLengthHandler : AbstractHandler
 {

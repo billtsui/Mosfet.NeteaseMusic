@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace GoldenCudgel.Utils;
+namespace Mosfet.NeteaseMusic.Utils;
 
 public class AESUtil
 {

@@ -1,5 +1,5 @@
 using CommandLine;
-namespace GoldenCudgel.Entities;
+namespace Mosfet.NeteaseMusic.Entities;
 
 public class Options
 {

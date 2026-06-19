@@ -1,4 +1,4 @@
-namespace GoldenCudgel.Entities;
+namespace Mosfet.NeteaseMusic.Entities;
 
 public class Privilege
 {

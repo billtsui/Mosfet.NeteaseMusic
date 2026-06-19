@@ -1,10 +1,10 @@
 using System.Buffers;
 using System.Text;
 using System.Text.Json;
-using GoldenCudgel.Entities;
-using GoldenCudgel.Utils;
+using Mosfet.NeteaseMusic.Entities;
+using Mosfet.NeteaseMusic.Utils;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
 public class MetaContentHandler : AbstractHandler
 {

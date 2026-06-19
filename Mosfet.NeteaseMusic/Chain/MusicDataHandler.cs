@@ -1,8 +1,8 @@
 using ATL;
-using GoldenCudgel.Entities;
-using GoldenCudgel.Utils;
+using Mosfet.NeteaseMusic.Entities;
+using Mosfet.NeteaseMusic.Utils;
 
-namespace GoldenCudgel.Chain;
+namespace Mosfet.NeteaseMusic.Chain;
 
 public class MusicDataHandler : AbstractHandler
 {

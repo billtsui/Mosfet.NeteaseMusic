@@ -1,4 +1,4 @@
-namespace GoldenCudgel.Utils;
+namespace Mosfet.NeteaseMusic.Utils;
 
 public class RC4
 {

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace GoldenCudgel.Entities;
+namespace Mosfet.NeteaseMusic.Entities;
 
 [DataContract]
 public class NeteaseCopyrightData
