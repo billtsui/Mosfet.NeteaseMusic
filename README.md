@@ -1,5 +1,5 @@
-# GoldenCudgel
-[![.NET](https://github.com/billtsui/SunWukong/actions/workflows/dotnet.yml/badge.svg)](https://github.com/billtsui/SunWukong/actions/workflows/dotnet.yml)  ![GitHub License](https://img.shields.io/github/license/billtsui/SunWuKong?label=License&color=%2354C64F) ![Static Badge](https://img.shields.io/badge/Version-.Net%2010.0-%2354C64F) ![Static Badge](https://img.shields.io/badge/Platform-macOS%2015%2CWindows%2011-%2354C64F)
+# Mosfet.NeteaseMusic
+[![.NET](https://github.com/billtsui/SunWukong/actions/workflows/dotnet.yml/badge.svg)](https://github.com/billtsui/Mosfet.NeteaseMusic/actions/workflows/dotnet.yml)  ![GitHub License](https://img.shields.io/github/license/billtsui/Mosfet.NeteaseMusic?label=License&color=%2354C64F) ![Static Badge](https://img.shields.io/badge/Version-.Net%2010.0-%2354C64F) ![Static Badge](https://img.shields.io/badge/Platform-macOS%2015%2CWindows%2011-%2354C64F)
 
 
 
