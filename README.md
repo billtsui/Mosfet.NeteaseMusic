@@ -1,5 +1,5 @@
 # Mosfet.NeteaseMusic
-[![.NET](https://github.com/billtsui/Mosfet.NeteaseMusic/actions/workflows/dotnet.yml/badge.svg)](https://github.com/billtsui/Mosfet.NeteaseMusic/actions/workflows/dotnet.yml) ![GitHub License](https://img.shields.io/github/license/billtsui/Mosfet.NeteaseMusic?label=License&color=%2354C64F) ![Static Badge](https://img.shields.io/badge/Version-.Net%2010.0-%2354C64F) ![Static Badge](https://img.shields.io/badge/Platform-macOS%2015%2CWindows%2011-%2354C64F)
+[![.NET](https://github.com/billtsui/Mosfet.NeteaseMusic/actions/workflows/dotnet.yml/badge.svg)](https://github.com/billtsui/Mosfet.NeteaseMusic/actions/workflows/dotnet.yml) ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg) ![.NET Version](https://img.shields.io/badge/.NET-10.0.9-%23512bd4.svg?&logoColor=white) ![Windows 11](https://custom-icon-badges.demolab.com/badge/Windows_11-0078D6?logo=windows11) ![macOS 15](https://img.shields.io/badge/macOS_15-%231F161F?logo=apple&logoColor=fff")
 
 
 
